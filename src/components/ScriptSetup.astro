@@ -53,11 +53,127 @@
     });
   };
 
+  // setup floating table of contents
+  const setupFloatingTOC = () => {
+    // remove existing TOC if any
+    const existingTOC = document.querySelector('.floating-toc');
+    if (existingTOC) {
+      // cleanup old observer
+      if ((existingTOC as any)._observer) {
+        (existingTOC as any)._observer.disconnect();
+      }
+      existingTOC.remove();
+    }
+
+    // check if we're on a post page
+    const isPostPage = window.location.pathname.startsWith('/posts/');
+    if (!isPostPage) {
+      return;
+    }
+
+    // get all headings with IDs
+    const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+      .filter(heading => heading.id)
+      .map(heading => ({
+        depth: parseInt(heading.tagName.charAt(1)),
+        text: heading.textContent?.trim() || '',
+        slug: heading.id
+      }));
+
+    if (headings.length === 0) {
+      return;
+    }
+
+    // create TOC container
+    const tocContainer = document.createElement('nav');
+    tocContainer.className = 'floating-toc';
+    tocContainer.setAttribute('role', 'navigation');
+    tocContainer.setAttribute('aria-label', 'Table of Contents');
+
+    // create TOC HTML
+    tocContainer.innerHTML = `
+    <div class="toc">
+      <div class="toc-header">
+        <h3>Table of Contents</h3>
+      </div>
+      <div class="toc-content">
+        <ul class="toc-list">
+          ${headings.map(heading => `
+            <li class="toc-item" style="margin-left: ${(heading.depth - 1) * 12}px">
+              <button class="toc-link" data-slug="${heading.slug}" title="${heading.text}">
+                ${heading.text}
+              </button>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    </div>
+    `;
+
+    // append to body
+    document.body.appendChild(tocContainer);
+
+    // add click event listeners
+    tocContainer.addEventListener('click', (e) => {
+      if (!e.target) return;
+
+      const target = e.target as HTMLElement;
+      const button = target.closest('.toc-link') as HTMLButtonElement;
+
+      if (button) {
+        const slug = button.getAttribute('data-slug');
+        if (slug) {
+          const element = document.getElementById(slug);
+          if (element) {
+            // scroll to target position
+            const targetPosition = element.offsetTop - 150;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          }
+        }
+      }
+    });
+
+    // setup scroll highlighting
+    let activeId = '';
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.boundingClientRect.top <= 100) {
+            activeId = entry.target.id;
+            // update highlighting
+            tocContainer.querySelectorAll('.toc-link').forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('data-slug') === activeId) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+      },
+      {
+        rootMargin: '-100px 0px -80% 0px',
+        threshold: 0
+      }
+    );
+
+    // observe all headings
+    headings.forEach(({ slug }) => {
+      const element = document.getElementById(slug);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    // save observer reference for cleanup
+    (tocContainer as any)._observer = observer;
+  };
+
   // init
   const setup = () => {
     setupUrlAnchor();
     setupLozad();
     setupScrollBar();
+    setupFloatingTOC();
   };
 
   document.addEventListener("DOMContentLoaded", setup);

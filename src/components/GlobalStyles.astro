@@ -53,4 +53,118 @@ import "overlayscrollbars/overlayscrollbars.css";
     height: 5px;
     background-color: var(--primary-color);
   }
+
+  /* Floating TOC Styles - Support for JavaScript-created TOC */
+  .floating-toc {
+    position: fixed !important;
+    top: 20%;
+    left: 0.5rem;
+    width: 280px;
+    max-height: 60vh;
+    background: transparent;
+    backdrop-filter: blur(4px);
+    border: none;
+    border-radius: 12px;
+    box-shadow: none;
+    z-index: 9999 !important;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* TOC Header */
+  .toc-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--primary-color-transparent);
+    background: var(--primary-color-transparent);
+  }
+
+  .toc-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+  }
+
+  /* TOC Content Area */
+  .toc-content {
+    padding: 0.5rem 0;
+    max-height: calc(60vh - 60px);
+    overflow-y: auto;
+  }
+
+  /* Custom Scrollbar for TOC */
+  .toc-content::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .toc-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toc-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color-transparent);
+    border-radius: 2px;
+  }
+
+  /* TOC List Styles */
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* TOC Link Button Styles */
+  .toc-link {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1.25rem;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Hover Effect */
+  .toc-link:hover {
+    background: var(--primary-color-transparent);
+    color: var(--primary-color);
+  }
+
+  /* Active State */
+  .toc-link.active {
+    background: var(--primary-color-transparent);
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+    font-weight: 500;
+  }
+
+  /* Responsive Design: Hide on medium screens */
+  @media (max-width: 1200px) {
+    .floating-toc {
+      display: none;
+    }
+  }
+
+  /* Hide on small screens */
+  @media (max-width: 768px) {
+    .floating-toc {
+      display: none;
+    }
+  }
 </style>
