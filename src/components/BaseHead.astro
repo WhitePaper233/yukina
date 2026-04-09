@@ -3,7 +3,18 @@ import YukinaConfig from "../../yukina.config";
 import GlobalStyles from "./GlobalStyles.astro";
 import ScriptSetup from "./ScriptSetup.astro";
 
+interface Props {
+    title?: string;
+    description?: string;
+    image?: string;
+}
+
+const { title, description, image } = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const pageTitle = title ? `${title} | ${YukinaConfig.title}` : YukinaConfig.title;
+const pageDescription = description ?? YukinaConfig.description;
+const ogImage = image ? new URL(image, Astro.site) : undefined;
 ---
 
 <!-- Global Metadata -->
@@ -16,30 +27,30 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Primary Meta Tags -->
-<title>{YukinaConfig.title}</title>
-<meta name="title" content={YukinaConfig.title} />
-<meta name="description" content={YukinaConfig.description} />
+<title>{pageTitle}</title>
+<meta name="title" content={pageTitle} />
+<meta name="description" content={pageDescription} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={YukinaConfig.title} />
-<meta property="og:description" content={YukinaConfig.description} />
-<!-- <meta property="og:image" content={new URL(image, Astro.url)} /> -->
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={pageDescription} />
+{ogImage && <meta property="og:image" content={ogImage} />}
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={YukinaConfig.title} />
-<meta property="twitter:description" content={YukinaConfig.description} />
-<!-- <meta property="twitter:image" content={new URL(image, Astro.url)} /> -->
+<meta property="twitter:title" content={pageTitle} />
+<meta property="twitter:description" content={pageDescription} />
+{ogImage && <meta property="twitter:image" content={ogImage} />}
 
 <!-- RSS AutoDiscovery -->
 <link
-  rel="alternate"
-  type="application/rss+xml"
-  title={YukinaConfig.title}
-  href={new URL("rss.xml", Astro.site)}
+        rel="alternate"
+        type="application/rss+xml"
+        title={YukinaConfig.title}
+        href={new URL("rss.xml", Astro.site)}
 />
 
 <!-- SiteMap -->
@@ -47,14 +58,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 <!-- CSS -->
 <link
-  rel="stylesheet"
-  href="https://fastly.jsdelivr.net/npm/katex/dist/katex.min.css"
+        rel="stylesheet"
+        href="https://fastly.jsdelivr.net/npm/katex/dist/katex.min.css"
 />
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.bunny.net" />
 <link
-  href="https://fonts.bunny.net/css?family=noto-sans-sc:100,200,300,400,500,600,700,800,900|raleway:500,700"
-  rel="stylesheet"
+        href="https://fonts.bunny.net/css?family=noto-sans-sc:100,200,300,400,500,600,700,800,900|raleway:500,700"
+        rel="stylesheet"
 />
 
 <GlobalStyles />

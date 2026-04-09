@@ -17,18 +17,18 @@ export interface Props {
 const props = Astro.props;
 ---
 
-<Base>
+<Base title={props.title} description={props.subTitle} image={props.bannerImage}>
   <NavBar />
 
   {
-    YukinaConfig.bannerStyle == "LOOP" && (
-      <Banner
-        title={props.title}
-        subTitle={props.subTitle}
-        bannerImage={props.bannerImage}
-        slug={props.slug}
-      />
-    )
+      YukinaConfig.bannerStyle == "LOOP" && (
+          <Banner
+              title={props.title}
+              subTitle={props.subTitle}
+              bannerImage={props.bannerImage}
+              slug={props.slug}
+          />
+      )
   }
 
   <div class="main-container my-10">
